@@ -6,119 +6,162 @@
     <title>BA Serah Terima Digital-Virtual LBK</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        @page {
+            size: A4 portrait;
+            margin: 10mm;
+        }
         @media print {
             .no-print { display: none !important; }
-            body { padding: 0; background: white; }
-            .container { 
-                box-shadow: none; 
-                border: none; 
-                width: 100%; 
-                max-width: 100%; 
-                margin: 0;
-                padding: 0;
+            body { 
+                padding: 0 !important; 
+                margin: 0 !important; 
+                background: white !important; 
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
-            input, textarea { border: none !important; outline: none !important; }
+            .container { 
+                box-shadow: none !important; 
+                border: none !important; 
+                width: 100% !important; 
+                max-width: 100% !important; 
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            input, textarea { 
+                border: none !important; 
+                outline: none !important; 
+                background: transparent !important;
+            }
             canvas { border: none !important; }
+            .page-break { 
+                page-break-before: always !important; 
+                break-before: page !important;
+            }
         }
         canvas { border: 1px dashed #ccc; border-radius: 4px; cursor: crosshair; touch-action: none; }
         .input-field { border-bottom: 1px solid #e2e8f0; transition: border-color 0.3s; }
         .input-field:focus { border-color: #3b82f6; outline: none; }
     </style>
 </head>
-<body class="bg-gray-100 py-10 px-5">
+<body class="bg-gray-100 py-6 px-4">
 
-    <div class="container mx-auto max-w-4xl bg-white p-10 shadow-lg border border-gray-200">
-        <div class="text-center mb-8 border-b-2 border-black pb-4">
-            <h1 class="text-2xl font-bold uppercase">Berita Acara Serah Terima (BAST)</h1>
-            <p class="text-sm text-gray-600 italic">SARANA VIRTUAL LEBAK</p>
+    <!-- HALAMAN 1: DOKUMEN BAST -->
+    <div class="container mx-auto max-w-4xl bg-white p-8 shadow-lg border border-gray-200 mb-6">
+        <!-- Header -->
+        <div class="text-center mb-6 border-b-2 border-black pb-3">
+            <h1 class="text-2xl font-bold uppercase tracking-wide">Berita Acara Serah Terima (BAST)</h1>
+            <p class="text-xs text-gray-600 italic font-semibold">SARANA VIRTUAL LEBAK</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div class="space-y-4">
+        <!-- Info Pengiriman -->
+        <div class="grid grid-cols-2 gap-6 mb-6">
+            <div class="space-y-3">
                 <div>
-                    <label class="block text-xs font-bold uppercase text-gray-500">Dikirim Oleh (Virtual):</label>
-                    <input type="text" id="inputDikirim" class="w-full p-2 input-field font-semibold" placeholder="Nama Pengirim.(Cnth: Fazar Virtual)" oninput="updateSignNames()">
+                    <label class="block text-[11px] font-bold uppercase text-gray-500">Dikirim Oleh (Virtual):</label>
+                    <input type="text" id="inputDikirim" class="w-full p-1.5 input-field font-semibold text-sm" placeholder="Nama Pengirim... (Cnth: Fazar Virtual)" oninput="updateSignNames()">
                 </div>
-                <div class="grid grid-cols-1 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-gray-500">Kode-Nama Toko:</label>
-                        <input type="text" id="inputNamaToko" class="w-full p-2 input-field font-semibold text-blue-800" placeholder="Contoh: TKBV-FRESH DC LEBAK">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-gray-500">Diterima Oleh (Personil Toko):</label>
-                        <input type="text" id="inputDiterima" class="w-full p-2 input-field font-semibold" placeholder="Nama Penerima.(Cnth:Fazar-2015317520)" oninput="updateSignNames()">
-                    </div>
+                <div>
+                    <label class="block text-[11px] font-bold uppercase text-gray-500">Kode-Nama Toko:</label>
+                    <input type="text" id="inputNamaToko" class="w-full p-1.5 input-field font-semibold text-sm text-blue-800" placeholder="Contoh: TKBV-FRESH DC LEBAK">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold uppercase text-gray-500">Diterima Oleh (Personil Toko):</label>
+                    <input type="text" id="inputDiterima" class="w-full p-1.5 input-field font-semibold text-sm" placeholder="Nama Penerima... (Cnth: Fazar-2015317520)" oninput="updateSignNames()">
                 </div>
             </div>
-            <div class="space-y-4">
+            <div class="space-y-3">
                 <div>
-                    <label class="block text-xs font-bold uppercase text-gray-500">Tanggal:</label>
-                    <input type="date" id="tglInput" class="w-full p-2 input-field">
+                    <label class="block text-[11px] font-bold uppercase text-gray-500">Tanggal:</label>
+                    <input type="date" id="tglInput" class="w-full p-1.5 input-field text-sm">
                 </div>
             </div>
         </div>
 
+        <!-- Tabel Barang -->
         <div class="mb-4">
-            <table class="w-full border-collapse border border-gray-400" id="tabelBarang">
+            <table class="w-full border-collapse border border-gray-400 table-fixed" id="tabelBarang">
                 <thead>
-                    <tr class="bg-gray-100 text-sm uppercase">
-                        <th class="border border-gray-400 p-2 text-left">Nama Barang</th>
-                        <th class="border border-gray-400 p-2 w-24">Qty</th>
-                        <th class="border border-gray-400 p-2 text-left">Keterangan</th>
+                    <tr class="bg-gray-100 text-xs uppercase">
+                        <th class="border border-gray-400 p-2 text-left w-2/5">Nama Barang</th>
+                        <th class="border border-gray-400 p-2 text-center w-16">Qty</th>
+                        <th class="border border-gray-400 p-2 text-left w-3/5">Keterangan</th>
                     </tr>
                 </thead>
                 <tbody id="tbodyBarang">
                     <tr>
-                        <td class="border border-gray-400 p-0"><input type="text" class="w-full p-2 outline-none" placeholder="Isi Nama Barang/Sarana..."></td>
-                        <td class="border border-gray-400 p-0"><input type="number" class="w-full p-2 text-center outline-none" value="1"></td>
-                        <td class="border border-gray-400 p-0"><input type="text" class="w-full p-2 outline-none" placeholder="S/N, TID, MID, dll..."></td>
+                        <td class="border border-gray-400 p-0"><input type="text" class="w-full p-1.5 text-sm outline-none" placeholder="Isi Nama Barang/Sarana..."></td>
+                        <td class="border border-gray-400 p-0"><input type="number" class="w-full p-1.5 text-sm text-center outline-none" value="1"></td>
+                        <td class="border border-gray-400 p-0"><input type="text" class="w-full p-1.5 text-sm outline-none" placeholder="S/N, TID, MID, dll..."></td>
                     </tr>
                 </tbody>
             </table>
 
-            <div class="mt-3 flex gap-2 no-print">
-                <button onclick="tambahBaris()" class="bg-green-600 text-white px-3 py-1.5 rounded text-sm hover:bg-green-700 transition">
+            <div class="mt-2 flex gap-2 no-print">
+                <button onclick="tambahBaris()" class="bg-green-600 text-white px-3 py-1 rounded text-xs font-semibold hover:bg-green-700 transition">
                     + Tambah Baris
                 </button>
-                <button onclick="hapusBaris()" class="bg-red-500 text-white px-3 py-1.5 rounded text-sm hover:bg-red-600 transition">
+                <button onclick="hapusBaris()" class="bg-red-500 text-white px-3 py-1 rounded text-xs font-semibold hover:bg-red-600 transition">
                     Hapus Baris
                 </button>
             </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-4 text-center mt-16">
-            <div class="flex flex-col items-center">
-                <p class="font-bold mb-2 text-sm uppercase">Dibuat,</p>
-                <canvas id="sign1" width="220" height="120" class="bg-gray-50"></canvas>
+        <!-- Bagian Tanda Tangan -->
+        <div class="grid grid-cols-3 gap-4 text-center mt-8">
+            <div class="flex flex-col items-center justify-between">
+                <p class="font-bold text-xs uppercase mb-1">Dibuat,</p>
+                <canvas id="sign1" width="180" height="80" class="bg-gray-50"></canvas>
                 <button onclick="clearPad('sign1')" class="no-print text-[10px] text-red-500 mt-1 uppercase underline">Hapus TTD</button>
-                <p id="labelDikirim" class="mt-4 border-t border-black min-w-[150px] font-bold text-sm">( ................. )</p>
+                <p id="labelDikirim" class="mt-2 border-t border-black min-w-[140px] font-bold text-xs pt-0.5">( ................. )</p>
             </div>
 
-            <div class="flex flex-col justify-between">
-                <p class="font-bold text-sm uppercase">Mengetahui,</p>
-                <div class="h-[120px]"></div> <p class="border-t border-black min-w-[150px] font-bold uppercase text-sm">O.M / SPV</p>
+            <div class="flex flex-col items-center justify-between">
+                <p class="font-bold text-xs uppercase mb-1">Mengetahui,</p>
+                <div class="h-[80px]"></div>
+                <p class="border-t border-black min-w-[140px] font-bold uppercase text-xs pt-0.5">O.M / SPV</p>
             </div>
 
-            <div class="flex flex-col items-center">
-                <p class="font-bold mb-2 text-sm uppercase">Diterima,</p>
-                <canvas id="sign2" width="220" height="120" class="bg-gray-50"></canvas>
+            <div class="flex flex-col items-center justify-between">
+                <p class="font-bold text-xs uppercase mb-1">Diterima,</p>
+                <canvas id="sign2" width="180" height="80" class="bg-gray-50"></canvas>
                 <button onclick="clearPad('sign2')" class="no-print text-[10px] text-red-500 mt-1 uppercase underline">Hapus TTD</button>
-                <p id="labelDiterima" class="mt-4 border-t border-black min-w-[150px] font-bold text-sm">( ................. )</p>
+                <p id="labelDiterima" class="mt-2 border-t border-black min-w-[140px] font-bold text-xs pt-0.5">( ................. )</p>
             </div>
         </div>
+    </div>
 
-        <div class="mt-10 text-center no-print border-t pt-5">
-            <button onclick="window.print()" class="bg-blue-700 text-white px-10 py-3 rounded-full font-bold shadow-lg hover:bg-blue-800 transition transform hover:scale-105">
+    <!-- HALAMAN 2: DOKUMENTASI FOTO -->
+    <div class="container mx-auto max-w-4xl bg-white p-8 shadow-lg border border-gray-200 page-break">
+        <div class="border-b-2 border-black pb-2 mb-4 text-center">
+            <h2 class="text-lg font-bold uppercase">Dokumentasi Fisik / Foto Serah Terima</h2>
+            <p class="text-xs text-gray-500 italic">Lampiran Bukti Penyerahan Barang (Minimal 1 Foto, Maksimal 4 Foto)</p>
+        </div>
+
+        <!-- Area Upload (No-Print) -->
+        <div class="no-print mb-6 bg-blue-50 p-4 border border-blue-200 rounded text-center">
+            <input type="file" id="fotoInput" accept="image/*" capture="environment" class="hidden" onchange="prosesFoto(event)">
+            <button onclick="document.getElementById('fotoInput').click()" class="bg-blue-600 text-white px-5 py-2 rounded-lg font-bold text-sm hover:bg-blue-700 shadow transition inline-flex items-center gap-2">
+                📷 Ambil Foto / Upload Gambar
+            </button>
+            <p id="fotoCounter" class="text-xs text-gray-600 mt-2 font-semibold">Foto Terunggah: 0 / 4 (Wajib min. 1 foto)</p>
+        </div>
+
+        <!-- Grid Tampilan Foto -->
+        <div id="fotoGrid" class="grid grid-cols-2 gap-4">
+            <!-- Foto hasil upload akan muncul di sini -->
+        </div>
+
+        <!-- Tombol Cetak -->
+        <div class="mt-10 text-center no-print border-t pt-4">
+            <button onclick="prosesCetak()" class="bg-blue-700 text-white px-10 py-3 rounded-full font-bold shadow-lg hover:bg-blue-800 transition transform hover:scale-105">
                 CETAK / SIMPAN PDF
             </button>
         </div>
     </div>
 
     <script>
-        // Set tanggal hari ini secara otomatis
         document.getElementById('tglInput').valueAsDate = new Date();
 
-        // Update Nama di TTD secara Real-time
         function updateSignNames() {
             const dikirim = document.getElementById('inputDikirim').value;
             const diterima = document.getElementById('inputDiterima').value;
@@ -135,9 +178,9 @@
             const cell3 = row.insertCell(2);
             const classes = "border border-gray-400 p-0";
             cell1.className = cell2.className = cell3.className = classes;
-            cell1.innerHTML = '<input type="text" class="w-full p-2 outline-none" placeholder="...">';
-            cell2.innerHTML = '<input type="number" class="w-full p-2 text-center outline-none" value="1">';
-            cell3.innerHTML = '<input type="text" class="w-full p-2 outline-none" placeholder="...">';
+            cell1.innerHTML = '<input type="text" class="w-full p-1.5 text-sm outline-none" placeholder="...">';
+            cell2.innerHTML = '<input type="number" class="w-full p-1.5 text-sm text-center outline-none" value="1">';
+            cell3.innerHTML = '<input type="text" class="w-full p-1.5 text-sm outline-none" placeholder="...">';
         }
 
         function hapusBaris() {
@@ -145,6 +188,98 @@
             if (tbody.rows.length > 1) { tbody.deleteRow(-1); }
         }
 
+        // --- SISTEM MANAGEMENT FOTO & WATERMARK ---
+        let daftarFoto = [];
+
+        function prosesFoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (daftarFoto.length >= 4) {
+                alert("Maksimal 4 foto yang diperbolehkan!");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    // Buat Canvas untuk menambah Watermark
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+
+                    // Gambar Foto Utama
+                    ctx.drawImage(img, 0, 0);
+
+                    // Buat Teks Watermark Tanggal & Waktu
+                    const now = new Date();
+                    const tglStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                    const jamStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                    const watermarkText = `📷 ${tglStr} ${jamStr} WIB`;
+
+                    // Style Teks Watermark
+                    const fontSize = Math.max(16, Math.floor(canvas.width / 25));
+                    ctx.font = `bold ${fontSize}px Arial`;
+                    
+                    // Background pita gelap di bawah teks watermark agar terbaca di background terang/gelap
+                    const textWidth = ctx.measureText(watermarkText).width;
+                    const padding = 10;
+                    const xPos = canvas.width - textWidth - (padding * 2) - 20;
+                    const yPos = canvas.height - (fontSize * 1.5);
+
+                    ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+                    ctx.fillRect(xPos - 5, yPos - fontSize, textWidth + (padding * 2), fontSize * 1.6);
+
+                    // Tulis Teks Watermark Kuning terang
+                    ctx.fillStyle = "#ffeb3b";
+                    ctx.fillText(watermarkText, xPos + padding - 5, yPos);
+
+                    // Simpan Foto yang sudah ber-watermark
+                    daftarFoto.push(canvas.toDataURL('image/jpeg', 0.85));
+                    renderFoto();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            event.target.value = ""; // Reset input
+        }
+
+        function renderFoto() {
+            const grid = document.getElementById('fotoGrid');
+            grid.innerHTML = "";
+
+            daftarFoto.forEach((fotoSrc, idx) => {
+                const container = document.createElement('div');
+                container.className = "relative border border-gray-300 rounded overflow-hidden bg-gray-50 flex flex-col items-center p-2";
+
+                container.innerHTML = `
+                    <img src="${fotoSrc}" class="w-full h-48 object-cover rounded">
+                    <button onclick="hapusFoto(${idx})" class="no-print absolute top-3 right-3 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shadow">✕</button>
+                    <p class="text-[10px] text-gray-500 mt-1 font-semibold">Foto ${idx + 1}</p>
+                `;
+                grid.appendChild(container);
+            });
+
+            document.getElementById('fotoCounter').innerText = `Foto Terunggah: ${daftarFoto.length} / 4 (Wajib min. 1 foto)`;
+        }
+
+        function hapusFoto(index) {
+            daftarFoto.splice(index, 1);
+            renderFoto();
+        }
+
+        function prosesCetak() {
+            if (daftarFoto.length === 0) {
+                alert("⚠️ Gagal Cetak: Harap upload/ambil minimal 1 foto dokumentasi sebagai bukti serah terima!");
+                return;
+            }
+            window.print();
+        }
+
+        // --- SETUP TANDA TANGAN ---
         function setupCanvas(canvasId) {
             const canvas = document.getElementById(canvasId);
             const ctx = canvas.getContext('2d');
@@ -158,7 +293,7 @@
             };
 
             const startDrawing = (e) => { drawing = true; const pos = getPos(e); ctx.beginPath(); ctx.moveTo(pos.x, pos.y); e.preventDefault(); };
-            const doDrawing = (e) => { if (!drawing) return; const pos = getPos(e); ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.strokeStyle = '#000'; ctx.lineTo(pos.x, pos.y); ctx.stroke(); e.preventDefault(); };
+            const doDrawing = (e) => { if (!drawing) return; const pos = getPos(e); ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.strokeStyle = '#000'; ctx.lineTo(pos.x, pos.y); ctx.stroke(); e.preventDefault(); };
             const stopDrawing = () => { drawing = false; };
 
             canvas.addEventListener('mousedown', startDrawing);
