@@ -53,27 +53,19 @@
             <p class="text-xs text-gray-600 italic font-semibold">SARANA VIRTUAL LEBAK</p>
         </div>
 
-        <!-- Info Pengiriman -->
-        <div class="grid grid-cols-2 gap-6 mb-6">
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-[11px] font-bold uppercase text-gray-500">Dikirim Oleh (Virtual):</label>
-                    <input type="text" id="inputDikirim" class="w-full p-1.5 input-field font-semibold text-sm" placeholder="Nama Pengirim... (Cnth: Fazar Virtual)" oninput="updateSignNames()">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold uppercase text-gray-500">Kode-Nama Toko:</label>
-                    <input type="text" id="inputNamaToko" class="w-full p-1.5 input-field font-semibold text-sm text-blue-800" placeholder="Contoh: TKBV-FRESH DC LEBAK">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold uppercase text-gray-500">Diterima Oleh (Personil Toko):</label>
-                    <input type="text" id="inputDiterima" class="w-full p-1.5 input-field font-semibold text-sm" placeholder="Nama Penerima... (Cnth: Fazar-2015317520)" oninput="updateSignNames()">
-                </div>
+        <!-- Info Pengiriman (Full Width / Rapi Tanpa Tanggal Mengganggu) -->
+        <div class="space-y-3 mb-6">
+            <div>
+                <label class="block text-[11px] font-bold uppercase text-gray-500">Dikirim Oleh (Virtual):</label>
+                <input type="text" id="inputDikirim" class="w-full p-1.5 input-field font-semibold text-sm" placeholder="Nama Pengirim... (Cnth: Fazar Virtual)" oninput="updateSignNames()">
             </div>
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-[11px] font-bold uppercase text-gray-500">Tanggal:</label>
-                    <input type="date" id="tglInput" class="w-full p-1.5 input-field text-sm">
-                </div>
+            <div>
+                <label class="block text-[11px] font-bold uppercase text-gray-500">Kode-Nama Toko:</label>
+                <input type="text" id="inputNamaToko" class="w-full p-1.5 input-field font-semibold text-sm text-blue-800" placeholder="Contoh: TKBV-FRESH DC LEBAK">
+            </div>
+            <div>
+                <label class="block text-[11px] font-bold uppercase text-gray-500">Diterima Oleh (Personil Toko):</label>
+                <input type="text" id="inputDiterima" class="w-full p-1.5 input-field font-semibold text-sm" placeholder="Nama Penerima... (Cnth: Fazar-2015317520)" oninput="updateSignNames()">
             </div>
         </div>
 
@@ -106,8 +98,16 @@
             </div>
         </div>
 
+        <!-- Tanggal Surat (Gaya Surat Resmi di Kanan Sebelum TTD) -->
+        <div class="flex justify-end mt-6 mb-2">
+            <div class="text-right text-xs font-semibold flex items-center gap-1">
+                <input type="text" id="inputKota" class="text-right p-1 input-field w-24 font-semibold" value="Lebak,">
+                <input type="date" id="tglInput" class="p-1 input-field text-xs">
+            </div>
+        </div>
+
         <!-- Bagian Tanda Tangan -->
-        <div class="grid grid-cols-3 gap-4 text-center mt-8">
+        <div class="grid grid-cols-3 gap-4 text-center">
             <div class="flex flex-col items-center justify-between">
                 <p class="font-bold text-xs uppercase mb-1">Dibuat,</p>
                 <canvas id="sign1" width="180" height="80" class="bg-gray-50"></canvas>
@@ -188,7 +188,7 @@
             if (tbody.rows.length > 1) { tbody.deleteRow(-1); }
         }
 
-        // --- SISTEM MANAGEMENT FOTO & WATERMARK ---
+        // --- MANAGEMENT FOTO & WATERMARK ---
         let daftarFoto = [];
 
         function prosesFoto(event) {
@@ -204,27 +204,22 @@
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
-                    // Buat Canvas untuk menambah Watermark
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
                     
                     canvas.width = img.width;
                     canvas.height = img.height;
 
-                    // Gambar Foto Utama
                     ctx.drawImage(img, 0, 0);
 
-                    // Buat Teks Watermark Tanggal & Waktu
                     const now = new Date();
                     const tglStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
                     const jamStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                     const watermarkText = `📷 ${tglStr} ${jamStr} WIB`;
 
-                    // Style Teks Watermark
                     const fontSize = Math.max(16, Math.floor(canvas.width / 25));
                     ctx.font = `bold ${fontSize}px Arial`;
                     
-                    // Background pita gelap di bawah teks watermark agar terbaca di background terang/gelap
                     const textWidth = ctx.measureText(watermarkText).width;
                     const padding = 10;
                     const xPos = canvas.width - textWidth - (padding * 2) - 20;
@@ -233,18 +228,16 @@
                     ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
                     ctx.fillRect(xPos - 5, yPos - fontSize, textWidth + (padding * 2), fontSize * 1.6);
 
-                    // Tulis Teks Watermark Kuning terang
                     ctx.fillStyle = "#ffeb3b";
                     ctx.fillText(watermarkText, xPos + padding - 5, yPos);
 
-                    // Simpan Foto yang sudah ber-watermark
                     daftarFoto.push(canvas.toDataURL('image/jpeg', 0.85));
                     renderFoto();
                 };
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
-            event.target.value = ""; // Reset input
+            event.target.value = "";
         }
 
         function renderFoto() {
